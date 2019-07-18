@@ -1,6 +1,5 @@
 class UserService {
     constructor() {
-        this.user = null;
         this.token = null;
     }
 }
