@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import PropTypes from 'prop-types';
+import userService from './../service/user.service';
 
 const useStyles = {
     paper: {
@@ -17,17 +18,24 @@ const useStyles = {
     },
     textWidth: {
         width: "80%",
-        marginBottom: "0px"
+        marginBottom: "0px",
+        marginLeft: "10%"
     },
     signInButton: {
         marginTop: "15px",
-        width: "80%"
+        width: "80%",
+        marginLeft: "10%"
     },
     signUpField: {
-        marginTop: "15px"
+        marginTop: "10px"
     },
     signUpLink: {
-        marginLeft: "10px"
+        marginLeft: "10px",
+    },
+    errorField: {
+        marginTop: "10px",
+        color: "red",
+        textAlign: "center"
     }
 };
 
@@ -35,6 +43,33 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.classes = this.props.classes;
+        this.state = {
+            username: "",
+            password: "",
+            disable: false
+        }
+        this.errorExist = false;
+        this.errorPassword = false;
+        this.redirectUrl = this.props.location.state.from;
+        console.log(this.redirectUrl);
+    }
+
+    async submitForm(e) {
+        e.preventDefault();
+        this.setState({
+            disable: true
+        });
+        //logic
+        this.setState({
+            disable: false
+        });
+    }
+
+    handleOnChangeValue(e) {
+        e.preventDefault();
+        let obj = {};
+        obj[e.target.name] = e.target.value;
+        this.setState(obj);
     }
 
     render() {
@@ -42,13 +77,17 @@ class Login extends React.Component {
             <Container maxWidth="sm" className = {this.classes.paper}>
                 <CssBaseline />
                 <Typography variant="h4" className={this.classes.loginHeader}>Login</Typography>
-
+                
+                <form onSubmit={e => this.submitForm(e)}>
                 <TextField
                     label = "Username"
                     name = "username"
                     margin = "normal"
                     variant = "outlined"
                     className = {this.classes.textWidth}
+                    onChange = {e => this.handleOnChangeValue(e)}
+                    disabled = {this.state.disable}
+                    value = {this.state.username}
                 />
                 <TextField
                     label = "Password"
@@ -57,14 +96,24 @@ class Login extends React.Component {
                     variant = "outlined"
                     type = "password"
                     className = {this.classes.textWidth}
+                    onChange = {e => this.handleOnChangeValue(e)}
+                    disabled = {this.state.disable}
+                    value = {this.state.password}
                 />
 
-                <Button color="primary" variant="contained" className={this.classes.signInButton}>
+                <Button color="primary" variant="contained" className={this.classes.signInButton} type="submit">
                     Sign in
                 </Button>
+                </form>
+                
+                {/*error field*/}
+                <div className = {this.classes.errorField}>
+                    <Typography variant = "subtitle1" hidden = {!this.errorExist}>Tài khoản không tồn tại</Typography>
+                    <Typography variant = "subtitle1" hidden = {!this.errorPassword}>Sai mật khẩu</Typography>
+                </div>
 
                 <div className = {this.classes.signUpField}>
-                <Typography variant = "p" display="inline">Don't have an account ?</Typography>
+                <Typography variant = "body2" display="inline">Don't have an account ?</Typography>
                 <Typography display="inline" className = {this.classes.signUpLink}><Link href={"/signup"}>Sign up</Link></Typography>
                 </div>
             </Container>
