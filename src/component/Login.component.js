@@ -5,7 +5,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
+import {Link} from "react-router-dom";
 import PropTypes from 'prop-types';
 import userService from './../service/user.service';
 
@@ -36,7 +36,17 @@ const useStyles = {
         marginTop: "10px",
         color: "red",
         textAlign: "center"
+    },
+    visitedLink: {
+        '&:visited': {
+            color: "blue"
+        },
+        textDecoration: "none",
+        '&:hover': {
+            textDecoration: "underline"
+        }
     }
+
 };
 
 class Login extends React.Component {
@@ -47,11 +57,16 @@ class Login extends React.Component {
             username: "",
             password: "",
             disable: false
-        }
+        };
         this.errorExist = false;
         this.errorPassword = false;
-        this.redirectUrl = this.props.location.state.from;
-        console.log(this.redirectUrl);
+        if (this.props.location.state) {
+            this.redirectUrl = this.props.location.state.from;
+        }
+    }
+
+    componentDidMount() {
+        document.title = "Login";
     }
 
     async submitForm(e) {
@@ -114,7 +129,9 @@ class Login extends React.Component {
 
                 <div className = {this.classes.signUpField}>
                 <Typography variant = "body2" display="inline">Don't have an account ?</Typography>
-                <Typography display="inline" className = {this.classes.signUpLink}><Link href={"/signup"}>Sign up</Link></Typography>
+                <Typography display="inline" className = {this.classes.signUpLink} variant="subtitle1">
+                    <Link className = {this.classes.visitedLink}  to={"/signup"}>Sign up</Link>
+                </Typography>
                 </div>
             </Container>
         );
