@@ -4,7 +4,7 @@ import axios from 'axios';
 function get(url) {
     let headers = {};
     if (UserService.token != null) {
-        headers.Authorization = UserService.token;
+        headers.Authorization = 'Bearer ' + UserService.token;
     }
     return axios.get(url, {
         headers: headers
@@ -14,9 +14,14 @@ function get(url) {
 function post(url, payload) {
     let headers = {};
     if (UserService.token != null) {
-        headers.Authorization = UserService.token;
+        headers.Authorization = 'Bearer ' + UserService.token;
     }
     return axios.post(url, payload, {
         headers: headers
     });
 }
+
+export default {
+    get: get,
+    post: post
+};

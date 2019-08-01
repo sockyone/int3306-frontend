@@ -8,6 +8,8 @@ import {
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import {Toolbar} from "@material-ui/core";
+import userService from "../service/user.service";
+import {toast} from "react-toastify";
 
 const useStyles = (theme) => ({
     header: {
@@ -35,11 +37,24 @@ class NavBar extends React.Component {
             this.isHomePage = false;
         }
         this.titlePage = this.props.titlePage?this.props.titlePage:"Null page";
+        this.state = {
+            name: "undefined"
+        }
+        this.getName();
+    }
+
+    async getName() {
+        let name = 'undefined';
+        try {
+            name = await userService.getFirstName();
+        } catch (e) {
+            toast.error(e.message);
+        }
+        await this.setState({name: name});
     }
 
     logOut(e) {
-        e.preventDefault();
-        console.log('Logout');
+        userService.logout();
     }
 
     render() {
@@ -68,7 +83,7 @@ class NavBar extends React.Component {
                             color = "inherit"
                             noWrap
                 >
-                    Hi, Nam
+                    Hi, {this.state.name}
                 </Typography>
                 <Button variant="outlined" size="small" onClick = {e => this.logOut(e)}>
                     <Link className = {this.classes.logOutButton} to={"/login"}> Logout </Link>

@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom";
 import PropTypes from 'prop-types';
 import userService from './../service/user.service';
+import {toast} from 'react-toastify';
 
 const useStyles = {
     paper: {
@@ -71,20 +72,42 @@ class Login extends React.Component {
 
     async submitForm(e) {
         e.preventDefault();
+        if (this.state.username === "" && this.state.password ==="") {
+            toast.error("Username and password can not empty");
+            return;
+        }
         this.setState({
             disable: true
         });
-        //logic
+        try {
+            let response = await userService.login(this.state.username, this.state.password);
+            response = response.data;
+            console.log(response);
+            if (response.code) {
+                userService.setUser(response.payload);
+                if (this.redirectUrl) {
+                    this.props.history.push(this.redirectUrl);
+                    return;
+                } else {
+                    this.props.history.push("/");
+                    return;
+                }
+            } else {
+                toast.error(response.reason);
+            }
+        } catch (e) {
+            toast.error(e.message);
+        }
         this.setState({
             disable: false
         });
     }
 
-    handleOnChangeValue(e) {
+    async handleOnChangeValue(e) {
         e.preventDefault();
         let obj = {};
         obj[e.target.name] = e.target.value;
-        this.setState(obj);
+        await this.setState(obj);
     }
 
     render() {

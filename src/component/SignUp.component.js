@@ -8,6 +8,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
+import {toast} from 'react-toastify';
+import userService from "../service/user.service";
 
 const useStyles = {
     paper: {
@@ -59,8 +61,8 @@ class SignUp extends React.Component {
             username: "",
             password: "",
             repassword: "",
-            lastname: "",
-            firstname: "",
+            lastName: "",
+            firstName: "",
             disable: false
         };
     }
@@ -71,9 +73,31 @@ class SignUp extends React.Component {
 
     async submitForm(e) {
         e.preventDefault();
+        if (this.state.password !== this.state.repassword) {
+            toast.error("Repassword can not different from password");
+            return;
+        }
         this.setState({
             disable: true
         });
+        try {
+            let response = await userService.signUp({
+                username: this.state.username,
+                password: this.state.password,
+                lastName: this.state.lastName,
+                firstName: this.state.firstName
+            });
+            response = response.data;
+            if (response.code) {
+                toast.success("Sign up successfully, login again");
+                this.props.history.push("/login");
+                return;
+            } else {
+                toast.error(response.reason);
+            }
+        } catch (e) {
+            toast.error(e.message);
+        }
         //logic
         this.setState({
             disable: false
@@ -98,7 +122,7 @@ class SignUp extends React.Component {
                         <Grid item xs={6}>
                             <TextField
                                 label = "First name"
-                                name = "firstname"
+                                name = "firstName"
                                 margin = "normal"
                                 variant = "outlined"
                                 className = {this.classes.textWidthGrid}
@@ -111,7 +135,7 @@ class SignUp extends React.Component {
                         <Grid item xs={6} >
                             <TextField
                                 label = "Last name"
-                                name = "lastname"
+                                name = "lastName"
                                 margin = "normal"
                                 variant = "outlined"
                                 className = {this.classes.textWidthGrid}
