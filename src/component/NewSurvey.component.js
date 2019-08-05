@@ -53,7 +53,7 @@ const useStyles = {
         width: "100%"
     },
     textQuestionInputProps: {
-        fontSize: "1.5em"
+        fontSize: "1.4em"
     },
     addSelectionBtn: {
         borderRadius: "30px",
@@ -95,7 +95,7 @@ class NewSurvey extends React.Component {
             }
         }
         if (j == -1) {
-            return;
+            // do nothing
         } else {
             await this.setState((state)=>{
                 state.listQuestion[j].type = change.type;
@@ -126,8 +126,12 @@ class NewSurvey extends React.Component {
     }
 
     async publishSurvey(e) {
-        if (this.state.surveyName.length < 5) {
-            toast.error("Name of survey must at least 5 character");
+        if (this.state.surveyName.trim().length < 3) {
+            toast.error("Name of survey must at least 3 character");
+            return;
+        }
+        if (this.state.listQuestion.length < 1) {
+            toast.error("No question in your survey");
             return;
         }
         await this.setState({
@@ -139,7 +143,7 @@ class NewSurvey extends React.Component {
         let valid = true;
         for (let i = 0; i < n; i++) {
             let data = listQuestion[i];
-            if (data.payload.question.length < 10) {
+            if (data.payload.question.trim().length < 5) {
                 toast.error("Question " + (i+1) + " too short");
                 valid = false;
                 break;
@@ -231,6 +235,7 @@ class NewSurvey extends React.Component {
                     InputLabelProps={{
                         shrink: true,
                     }}
+                    spellCheck="false"
                 />
                 <Button className = {this.classes.submitSurveyBtn} variant="outlined"
                         color={"primary"}
@@ -417,6 +422,7 @@ class QuestionDesign extends React.Component {
                 value = {this.state.question}
                 onChange = {(e)=>this.handleChange(e)}
                 InputProps={{ classes: { input: this.classes.textQuestionInputProps }}}
+                spellCheck="false"
             />;
         } else if (this.props.questionType === "Select") {
             return (
@@ -433,6 +439,7 @@ class QuestionDesign extends React.Component {
                         value = {this.state.question}
                         onChange = {(e)=>this.handleChange(e)}
                         InputProps={{ classes: { input: this.classes.textQuestionInputProps }}}
+                        spellCheck="false"
                     />
                     {
                         this.state.choices.map((element, index)=> {
@@ -446,6 +453,7 @@ class QuestionDesign extends React.Component {
                                 className = {this.classes.selectionInput}
                                 value = {element}
                                 onChange = {(e)=>this.handleChangeSelection(e.target.value, index)}
+                                spellCheck="false"
                                 />
                                 <IconButton onClick={(e)=>this.deleteSelection(index)}>
                                     <Delete fontSize="small"/>
@@ -455,12 +463,11 @@ class QuestionDesign extends React.Component {
                         })
                     }
                     {
-                        this.state.choices.length > 5?<div></div>:
+                        this.state.choices.length > 3?<div></div>:
                         <IconButton className = {this.classes.addSelectionBtn} variant="outlined" onClick = {(e) => this.addMoreSelection(e)}>
                             <Add />
                         </IconButton>
                     }
-
                 </React.Fragment>
             );
         } else {
@@ -468,7 +475,5 @@ class QuestionDesign extends React.Component {
         }
     }
 }
-
-
 
 export default withStyles(useStyles)(NewSurvey);

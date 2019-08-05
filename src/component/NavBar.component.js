@@ -85,8 +85,8 @@ class NavBar extends React.Component {
                 >
                     Hi, {this.state.name}
                 </Typography>
-                <Button variant="outlined" size="small" onClick = {e => this.logOut(e)}>
-                    <Link className = {this.classes.logOutButton} to={"/login"}> Logout </Link>
+                <Button variant="outlined" size="small" >
+                    <Link className = {this.classes.logOutButton} to={"/login"} onClick = {e => this.logOut(e)}> Logout </Link>
                 </Button>
             </Toolbar>
         );

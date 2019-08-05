@@ -11,7 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import NewSurvey from './component/NewSurvey.component';
 import Survey from './component/Survey.component';
 import Result from './component/Result.component';
-import RedirectHomepage from './component/RedirectHompage.component';
 import './assets/css/fontawesome-free-5.10.0-web/css/all.css';
 
 toast.configure({
@@ -40,8 +39,5 @@ class App extends React.Component {
         );
     }
 }
-
-
-
 
 export default App;

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function get(url) {
     let headers = {};
-    if (UserService.token != null) {
+    if (UserService.getToken() != null) {
         headers.Authorization = 'Bearer ' + UserService.token;
     }
     return axios.get(url, {
@@ -13,7 +13,7 @@ function get(url) {
 
 function post(url, payload) {
     let headers = {};
-    if (UserService.token != null) {
+    if (UserService.getToken() != null) {
         headers.Authorization = 'Bearer ' + UserService.token;
     }
     return axios.post(url, payload, {

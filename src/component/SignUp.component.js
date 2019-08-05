@@ -73,8 +73,22 @@ class SignUp extends React.Component {
 
     async submitForm(e) {
         e.preventDefault();
-        if (this.state.password !== this.state.repassword) {
+        if (this.state.password.toString() !== this.state.repassword.toString()) {
             toast.error("Repassword can not different from password");
+            return;
+        }
+        let regex = /^[0-9a-zA-Z_]+$/;
+        if (!regex.test(this.state.username)) {
+            toast.error("User name only container a-z character, digit, and underscore");
+            return;
+        }
+        regex = /^[a-zA-Z\s]+$/
+        if (!regex.test(this.state.firstName)) {
+            toast.error("First name only container a-z character");
+            return;
+        }
+        if (!regex.test(this.state.lastName)) {
+            toast.error("Last name only container a-z character");
             return;
         }
         this.setState({
@@ -130,6 +144,7 @@ class SignUp extends React.Component {
                                 disabled = {this.state.disable}
                                 value = {this.state.firstname}
                                 required
+                                inputProps={{ minLength: 3 }}
                             />
                         </Grid>
                         <Grid item xs={6} >
@@ -143,6 +158,7 @@ class SignUp extends React.Component {
                                 disabled = {this.state.disable}
                                 value = {this.state.lastname}
                                 required
+                                inputProps={{ minLength: 3 }}
                             />
                         </Grid>
                     </Grid>
@@ -156,6 +172,7 @@ class SignUp extends React.Component {
                         disabled = {this.state.disable}
                         value = {this.state.username}
                         required
+                        inputProps={{ minLength: 5 }}
                     />
                     <TextField
                         label = "Password"
@@ -168,6 +185,7 @@ class SignUp extends React.Component {
                         disabled = {this.state.disable}
                         value = {this.state.password}
                         required
+                        inputProps={{ minLength: 6 }}
                     />
                     <TextField
                         label = "Repassword"
@@ -180,6 +198,7 @@ class SignUp extends React.Component {
                         disabled = {this.state.disable}
                         value = {this.state.repassword}
                         required
+                        inputProps={{ minLength: 6 }}
                     />
 
                     <Button color="primary" variant="contained" className={this.classes.signInButton} type="submit">

@@ -64,6 +64,7 @@ class Login extends React.Component {
         if (this.props.location.state) {
             this.redirectUrl = this.props.location.state.from;
         }
+        console.log(this.redirectUrl);
     }
 
     componentDidMount() {
@@ -72,7 +73,7 @@ class Login extends React.Component {
 
     async submitForm(e) {
         e.preventDefault();
-        if (this.state.username === "" && this.state.password ==="") {
+        if (this.state.username === "" || this.state.password ==="") {
             toast.error("Username and password can not empty");
             return;
         }

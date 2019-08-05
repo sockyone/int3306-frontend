@@ -1,12 +1,12 @@
 import React from 'react';
 import Container from "@material-ui/core/Container";
-import {Toolbar} from "@material-ui/core";
+import {Toolbar, IconButton} from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import userService from "../service/user.service";
 import {Redirect} from "react-router-dom";
-import {AddCircle} from "@material-ui/icons";
+import {AddCircle, Delete} from "@material-ui/icons";
 import {toast} from 'react-toastify';
 import {Link} from "react-router-dom";
 import Card from "@material-ui/core/Card";
@@ -42,10 +42,16 @@ const useStyles = (theme) => ({
     numberResult: {
         position: "absolute",
         right: "50px",
-        top: "30%"
+        bottom: "15%"
     },
     contentSurvey: {
         position: "relative"
+    },
+    deleteButton: {
+        position: "absolute",
+        right: "50px",
+        top: "5px",
+        padding: "8px"
     }
 });
 
@@ -68,6 +74,22 @@ class HomePage extends React.Component {
 
     goToResult(e, id) {
         this.props.history.push("/result/" + id);
+    }
+
+    async deleteSurvey(e, id) {
+        e.stopPropagation();
+        try {
+            let res = await surveyService.deleteSurvey(id);
+            res = res.data;
+            if (res.code) {
+                toast.success("Delete survey successfully");
+                this.load();
+            } else {
+                toast.error(res.reason);
+            }
+        } catch (e) {
+            toast.error(e.message);
+        }
     }
 
     copyLink(e, id) {
@@ -141,6 +163,9 @@ class HomePage extends React.Component {
                                 <Typography variant="h6" style={{display: "inline"}}>{el.name}</Typography>
                                 <i onClick = {(e)=>this.copyLink(e, el._id)} style = {{marginLeft: "8px", marginBottom:"10px"}} className="far fa-1.5x fa-copy"></i>
                                 <Typography variant="subtitle2" className = {this.classes.createdDayText}>{el.createdDate}</Typography>
+                                <IconButton className = {this.classes.deleteButton} onClick={(e)=>this.deleteSurvey(e, el._id)}>
+                                    <Delete size = {"small"} />
+                                </IconButton>
                                 <Typography variant="h6" className = {this.classes.numberResult}>#Result: {el.count}</Typography>
                             </CardContent>
                         </Card>
